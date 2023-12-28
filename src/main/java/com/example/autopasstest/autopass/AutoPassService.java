@@ -24,14 +24,9 @@ public class AutoPassService {
     private AutoPassComp autoPassComp;
     public AccessTokenRes doAccessToken(){
         AccessTokenReq req = new AccessTokenReq(SCOPE, GRANT_TYPE, CLIENT_ID, CLIENT_SECRET);
-        System.out.println("scope : " + SCOPE);
-        System.out.println("GRANT_TYPE : " + GRANT_TYPE);
-        System.out.println("CLIENT_ID : " + CLIENT_ID);
-        System.out.println("CLIENT_SECRET : " + CLIENT_SECRET);
 
         RestfulRs<AccessTokenRes> res = autoPassComp.exeAccessToken(req);
-        System.out.println("res : " +res.toString());
-        System.out.println("status : " + res.getStatus().toString());
+
         if(!isResultSuccess(res.getStatus().toString(), SUCCESS_CODE_200)){
             throw new RuntimeException();
         }

@@ -35,8 +35,6 @@ public class RestfulClient {
             log.error(e.getMessage());
         }
 
-        System.out.println(requestEntity.toString());
-
         ResponseEntity<T> rsEntity = restTemplate.exchange(url, requestMethod, requestEntity, responseType);
 
         rs.setStatus(HttpStatus.valueOf(rsEntity.getStatusCode().value()));
