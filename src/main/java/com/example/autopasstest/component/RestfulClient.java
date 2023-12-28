@@ -8,9 +8,8 @@ import org.springframework.web.client.RestTemplate;
 @Slf4j
 @Component
 public class RestfulClient {
-    public <T> RestfulRs<T> call(String url, Object data, HttpHeaders headers,
-                                 Class<T> responseType, HttpMethod requestMethod, MediaType mediaType){
-        RestfulRs<T> rs = new RestfulRs<>();
+    public RestfulRs<String> call(String url, Object data, HttpHeaders headers, HttpMethod requestMethod, MediaType mediaType){
+        RestfulRs<String> rs = new RestfulRs<>();
         HttpEntity<Object> requestEntity = null;
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.setErrorHandler(new ReturnErrorHandler());
@@ -35,7 +34,7 @@ public class RestfulClient {
             log.error(e.getMessage());
         }
 
-        ResponseEntity<T> rsEntity = restTemplate.exchange(url, requestMethod, requestEntity, responseType);
+        ResponseEntity<String> rsEntity = restTemplate.exchange(url, requestMethod, requestEntity, String.class);
 
         rs.setStatus(HttpStatus.valueOf(rsEntity.getStatusCode().value()));
         rs.setData(rsEntity.getBody());

@@ -2,6 +2,7 @@ package com.example.autopasstest.autopass;
 
 import com.example.autopasstest.component.RestfulClient;
 import com.example.autopasstest.component.RestfulRs;
+import com.example.autopasstest.util.JsonUtil;
 import com.example.autopasstest.util.PropUtils;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,15 +34,27 @@ public class AutoPassCompImpl implements AutoPassComp{
     }
 
     private <T> RestfulRs<T> doAutoPass(HttpHeaders header, String path, HttpMethod requestMethod, Object req,
-                                        Class<T> responseType,
-                                        MediaType mediaType){
+                                        Class<T> responseType, MediaType mediaType){
 
         String url = PropUtils.getProperty("autopass.forward.url") + path;
-        RestfulRs<T> res = null;
+        RestfulRs<String> resStr = null;
+        RestfulRs<T> res = new RestfulRs<>();
+        T resTypeClass = null;
+
         try{
-            res = restfulClient.call(url, req, header, responseType, requestMethod, mediaType);
+            resStr = restfulClient.call(url, req, header, requestMethod, mediaType);
+
+            try{
+                resTypeClass = JsonUtil.jsonToObject(resStr.getData(), responseType);
+            }catch(Exception e){
+                System.out.println("parse error");
+            }
+
+            res.setStatus(resStr.getStatus());
+            res.setData(resTypeClass);
+
         }catch(Exception e){
-            return null;
+            throw e;
         }
         return res;
     }
